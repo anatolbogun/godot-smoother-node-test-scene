@@ -20,7 +20,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="godot-beginner-2d-platformer"
+config/name="godot-smoother-test"
 run/main_scene="res://src/Levels/level_template.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://icon.svg"
@@ -58,7 +58,3 @@ jump={
 2d_physics/layer_2="enemies"
 2d_physics/layer_3="coins"
 2d_physics/layer_4="world"
-
-[physics]
-
-common/physics_ticks_per_second=6
