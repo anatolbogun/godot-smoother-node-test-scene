@@ -1,0 +1,9 @@
+Node2D
+Node
+CanvasLayer
+CollisionShape2D
+Area2D
+Camera2D
+VisibleOnScreenEnabler2D
+TileMap
+CharacterBody2D

@@ -1,0 +1,9 @@
+res://src/Actors/enemy.tscn
+res://src/Actors/player.tscn
+res://src/Levels/level_template.tscn
+res://src/Actors/actor.gd
+res://src/Levels/Smoother.gd
+res://src/Levels/test.gd
+res://src/Levels/smoother.gd
+res://src/Actors/player.gd
+res://src/Actors/enemy.gd

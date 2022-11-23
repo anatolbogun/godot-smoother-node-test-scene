@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://faaiosn2r65a"]
+
+[ext_resource type="Texture2D" uid="uid://d18qhlermi781" path="res://assets/player.png" id="1_8a4pw"]
+[ext_resource type="Script" path="res://src/Actors/player.gd" id="1_nrl78"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bw107"]
+size = Vector2(76, 82)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dupx4"]
+size = Vector2(94, 86)
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 8
+script = ExtResource("1_nrl78")
+
+[node name="Player" type="Sprite2D" parent="."]
+position = Vector2(0, -48)
+texture = ExtResource("1_8a4pw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -42)
+shape = SubResource("RectangleShape2D_bw107")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -192)
+current = true
+limit_left = 0
+limit_top = 0
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.0
+drag_right_margin = 0.0
+
+[node name="EnemyDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+modulate = Color(0.2075, 0, 0.83, 1)
+position = Vector2(0, -43)
+shape = SubResource("RectangleShape2D_dupx4")
+
+[connection signal="area_entered" from="EnemyDetector" to="." method="_on_enemy_detector_area_entered"]
+[connection signal="body_entered" from="EnemyDetector" to="." method="_on_enemy_detector_body_entered"]
