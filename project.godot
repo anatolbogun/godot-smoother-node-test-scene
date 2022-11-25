@@ -61,4 +61,4 @@ jump={
 
 [physics]
 
-common/physics_ticks_per_second=17
+common/physics_ticks_per_second=13
