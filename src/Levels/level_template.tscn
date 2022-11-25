@@ -60,6 +60,10 @@ layer_0/tile_data = PackedInt32Array(0, 2, 0, 65536, 2, 0, 131072, 2, 0, 196608,
 position = Vector2(205, 148)
 safe_margin = 3.0
 
+[node name="Player2" parent="." instance=ExtResource("2_m8x0h")]
+position = Vector2(205, 148)
+safe_margin = 3.0
+
 [node name="Enemy" parent="." instance=ExtResource("3_ehuom")]
 position = Vector2(1344, 556)
 
