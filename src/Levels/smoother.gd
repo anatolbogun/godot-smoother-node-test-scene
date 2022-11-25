@@ -28,6 +28,7 @@ func _physics_process(_delta: float) -> void:
 #	move_and_slide()
 #	previous_physics_position = position
 
+	# move this node to the bottom of the scene tree so that it is called after all other _physics_processes have been completed
 	owner.move_child(self, -1)
 
 	for child in _get_relevant_children():
