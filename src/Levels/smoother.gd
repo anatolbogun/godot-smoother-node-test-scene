@@ -12,7 +12,7 @@ extends Node
 #	previous_physics_position = position
 
 # TO DO:
-# - running a smoothed and not smoothed plyer sprite simultaneously shows that the
+# - running a smoothed and not smoothed player sprite simultaneously shows that the
 #   smoothed one is slightly slower (maybe need to take delta time into account)?
 # - this node needs export vars such as recursive (currently recursive isn't even supported),
 #   include or exclude specific nodes
@@ -26,7 +26,6 @@ var target_positions := {}
 
 
 func _ready() -> void:
-	print(owner)
 	# move this node to the bottom of the scene tree so that it is called after all other _physics_processes have been completed
 	owner.move_child(self, -1)
 
