@@ -3,7 +3,10 @@ extends Node
 # NOTE:
 # - For this to work this node must be at the bottom of the scene tree. Hence
 #   get_parent().move_child(self, -1)
-# - manual way in each physics object:
+# - For easier understanding consider:
+#	_positions[child][0] is the origin position
+#	_positions[child][1] is the target position
+# - manual alternative that needs to be applied in each physics object:
 #   # _process
 #   position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction()
 #   # _physics_process
@@ -14,47 +17,63 @@ extends Node
 # TO DO:
 # - running a smoothed and not smoothed player sprite simultaneously shows that the
 #   smoothed one is slightly slower (maybe need to take delta time into account)?
-# - this node needs export vars such as recursive (currently recursive isn't even supported),
-#   include or exclude specific nodes
+# - check if collision detection really works reliably, this seems a bit sketchy
+# - consider if we need any extra properties such as recursive, includes and excludes (not even sure about the last 2)
+#   e.g. do we need a mode where we don't follow the parent children but only apply includes, i.e. includes only either as an enum mode or a simple bool
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
-# - clean up origin_positions and target_positions
-# - maybe combine origin_positions and target_positions (may be a bit faster?)
 
-var origin_positions := {}
-var target_positions := {}
+@export var recursive: = true
+@export var includes: Array[NodePath] = []
+@export var excludes: Array[NodePath] = []
 
 
-func _ready() -> void:
-	# move this node to the bottom of the scene tree so that it is called after all other _physics_processes have been completed
-	get_parent().move_child(self, -1)
+var _positions := {}
 
 
 func _process(_delta: float) -> void:
 	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
 
-	for child in _get_relevant_children():
-		if origin_positions.has(child) && target_positions.has(child): # clean this up later, maybe not all checks are needed
-			child.position = origin_positions[child].lerp(target_positions[child], physics_interpolation_fraction)
+	for child in _get_relevant_nodes(get_parent()):
+		if _positions.has(child) && _positions[child].size() == 2:
+			child.position = _positions[child][0].lerp(_positions[child][1], physics_interpolation_fraction)
 #
 
 func _physics_process(_delta: float) -> void:
-	get_parent().move_child(self, -1)
+	var parent: = get_parent()
 
-	for child in _get_relevant_children():
-		if (!target_positions.has(child)):
-			target_positions[child] = child.position
-		elif (!origin_positions.has(child)):
-			origin_positions[child] = target_positions[child]
-			target_positions[child] = child.position
+	if parent == null: return
+
+	# move this node to the bottom of the parent tree (typically a scene's root node) so that it is called after all other _physics_processes have been completed
+	parent.move_child(self, -1)
+
+	for child in _get_relevant_nodes(parent):
+		if (!_positions.has(child)):
+			# only called on the first frame of the child node's existence
+			_positions[child] = [child.position]
+			# clean up _positions when a child exited the tree
+			child.tree_exited.connect(func (): _positions.erase(child))
+
+		elif (_positions[child].size() < 2):
+			# only called on the second frame of the child node's existence
+			_positions[child].push_front(_positions[child][0])
+			_positions[child][1] = child.position
 		else:
-			origin_positions[child] = target_positions[child]
-			target_positions[child] = child.position
-			child.position = origin_positions[child]
+			_positions[child][0] = _positions[child][1]
+			_positions[child][1] = child.position
+			child.position = _positions[child][0]
 
 
-# scene children that ignore any nodes that don't have a _physics_process overwrite
-func _get_relevant_children() -> Array[Node]:
-	return get_parent().get_children().filter( func (child):
-		return child != self && child.has_method("_physics_process") && child.name != "Player2"
-	)
+# get scene children that ignore any nodes that don't have a _physics_process overwrite
+func _get_relevant_nodes(parent) -> Array[Node]:
+	var nodes: Array[Node] = includes.map( func (include): return get_node(include))
+
+	for node in parent.get_children():
+		if node != self && !excludes.has(get_path_to(node)):
+			if node.has_method("_physics_process") && !nodes.has(node):
+				nodes.push_back(node)
+
+			if recursive && node.get_child_count() > 0:
+				nodes.append_array(_get_relevant_nodes(node))
+
+	return nodes
