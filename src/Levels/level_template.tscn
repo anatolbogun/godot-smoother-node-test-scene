@@ -61,6 +61,7 @@ position = Vector2(205, 148)
 safe_margin = 3.0
 
 [node name="Player2" parent="." instance=ExtResource("2_m8x0h")]
+process_mode = 4
 position = Vector2(205, 148)
 safe_margin = 3.0
 

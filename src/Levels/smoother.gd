@@ -20,6 +20,8 @@ extends Node
 #   just on a specific node in a node tree, not only on the tree root
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
+# - clean up origin_positions and target_positions
+# - maybe combine origin_positions and target_positions (may be a bit faster?)
 
 var origin_positions := {}
 var target_positions := {}
@@ -31,9 +33,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
+
 	for child in _get_relevant_children():
 		if origin_positions.has(child) && target_positions.has(child): # clean this up later, maybe not all checks are needed
-			child.position = origin_positions[child].lerp(target_positions[child], Engine.get_physics_interpolation_fraction())
+			child.position = origin_positions[child].lerp(target_positions[child], physics_interpolation_fraction)
 #
 
 func _physics_process(_delta: float) -> void:
