@@ -40,7 +40,7 @@ script = ExtResource("1_jn24k")
 [node name="Smoother" type="Node" parent="."]
 script = ExtResource("2_8i7dr")
 includes = []
-excludes = []
+excludes = [NodePath("../Player2")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -63,7 +63,7 @@ position = Vector2(205, 148)
 safe_margin = 3.0
 
 [node name="Player2" parent="." instance=ExtResource("2_m8x0h")]
-process_mode = 4
+modulate = Color(1, 0, 0, 1)
 position = Vector2(205, 148)
 safe_margin = 3.0
 
