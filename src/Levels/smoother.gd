@@ -49,13 +49,13 @@ func _physics_process(_delta: float) -> void:
 
 	for child in _get_physics_process_nodes(parent):
 		if (!_positions.has(child)):
-			# only called on the first frame of the child node's existence
+			# only called on the first frame after this child node's was added to _positions
 			_positions[child] = [child.position]
 			# clean up _positions when a child exited the tree
 			child.tree_exited.connect(func (): _positions.erase(child))
 
 		elif (_positions[child].size() < 2):
-			# only called on the second frame of the child node's existence
+			# only called on the second frame after this child node's was added to _positions
 			_positions[child].push_front(_positions[child][0])
 			_positions[child][1] = child.position
 		else:
