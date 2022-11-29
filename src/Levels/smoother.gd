@@ -34,10 +34,10 @@ var _positions := {}
 func _process(_delta: float) -> void:
 	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
 
-	for child in _get_relevant_nodes(get_parent()):
+	for child in _get_physics_process_nodes(get_parent()):
 		if _positions.has(child) && _positions[child].size() == 2:
 			child.position = _positions[child][0].lerp(_positions[child][1], physics_interpolation_fraction)
-#
+
 
 func _physics_process(_delta: float) -> void:
 	var parent: = get_parent()
@@ -47,7 +47,7 @@ func _physics_process(_delta: float) -> void:
 	# move this node to the bottom of the parent tree (typically a scene's root node) so that it is called after all other _physics_processes have been completed
 	parent.move_child(self, -1)
 
-	for child in _get_relevant_nodes(parent):
+	for child in _get_physics_process_nodes(parent):
 		if (!_positions.has(child)):
 			# only called on the first frame of the child node's existence
 			_positions[child] = [child.position]
@@ -65,7 +65,7 @@ func _physics_process(_delta: float) -> void:
 
 
 # get scene children that ignore any nodes that don't have a _physics_process overwrite
-func _get_relevant_nodes(parent) -> Array[Node]:
+func _get_physics_process_nodes(parent) -> Array[Node]:
 	var nodes: Array[Node] = includes.map( func (include): return get_node(include))
 
 	for node in parent.get_children():
@@ -74,6 +74,6 @@ func _get_relevant_nodes(parent) -> Array[Node]:
 				nodes.push_back(node)
 
 			if recursive && node.get_child_count() > 0:
-				nodes.append_array(_get_relevant_nodes(node))
+				nodes.append_array(_get_physics_process_nodes(node))
 
 	return nodes
