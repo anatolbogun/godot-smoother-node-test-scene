@@ -32,6 +32,7 @@ var _positions := {}
 
 
 func _process(_delta: float) -> void:
+	# position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() # local smoothing approach
 	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
 
 	for child in _get_physics_process_nodes(get_parent()):
@@ -40,6 +41,7 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	# position = previous_physics_position # local smoothing approach
 	var parent: = get_parent()
 
 	if parent == null: return
@@ -62,6 +64,23 @@ func _physics_process(_delta: float) -> void:
 			_positions[child][0] = _positions[child][1]
 			_positions[child][1] = child.position
 			child.position = _positions[child][0]
+
+	# previous_physics_position = position # local smoothing approach
+
+#   # the smoothed sprite position seems to be decreasing by about 1 pixel per physics process call if there is a velocity
+#	print("ORIGIN: ", parent.find_child("Player2").position - parent.find_child("Player").position)
+
+# CONTINUE:
+# Assume Player is smoothed and Player2 is exempt from smoothing.
+# I think I need to compare Player and Player2 origin positions and see where the target positions differ
+# or maybe print out the movement between each frame and compare by how much Player and Player2
+# differ. Then figure out what that number means, i.e. is it a single extra physics step that's missing?
+# That's actually possible because I think when the physics process is called there's likely
+# a physics_process between the same two frames, and so maybe it causes an issue if both
+# are applied simultaneously. What's called first, _process or _physics_process?
+# Maybe child.position shouldn't be set? No, when I comment ot the child.position line in
+# _physics_process both players at times move identically, but it's erratic. Still,
+# there may be a one (_process) frame difference between Player and Player2.
 
 
 # get scene children that ignore any nodes that don't have a _physics_process overwrite

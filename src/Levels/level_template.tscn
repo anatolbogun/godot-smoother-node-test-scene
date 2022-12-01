@@ -39,8 +39,9 @@ script = ExtResource("1_jn24k")
 
 [node name="Smoother" type="Node" parent="."]
 script = ExtResource("2_8i7dr")
+recursive = false
 includes = []
-excludes = [NodePath("../Player2")]
+excludes = [NodePath("../Player2"), NodePath("../Player3")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -67,13 +68,19 @@ modulate = Color(1, 0, 0, 1)
 position = Vector2(205, 148)
 safe_margin = 3.0
 
-[node name="Enemy" parent="." instance=ExtResource("3_ehuom")]
-position = Vector2(1344, 556)
-
-[node name="Enemy2" parent="." instance=ExtResource("3_ehuom")]
-position = Vector2(2220, 556)
+[node name="Player3" parent="." instance=ExtResource("2_m8x0h")]
+modulate = Color(1, 0, 1, 1)
+position = Vector2(205, 148)
+safe_margin = 3.0
+local_smoothed = true
 
 [node name="NestedTest" type="Node" parent="."]
 
 [node name="Enemy3" parent="NestedTest" instance=ExtResource("3_ehuom")]
 position = Vector2(3056, 556)
+
+[node name="Enemy" parent="NestedTest" instance=ExtResource("3_ehuom")]
+position = Vector2(1344, 556)
+
+[node name="Enemy2" parent="NestedTest" instance=ExtResource("3_ehuom")]
+position = Vector2(2220, 556)
