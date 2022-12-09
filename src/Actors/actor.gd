@@ -15,8 +15,14 @@ func _process(_delta: float) -> void:
 	if local_smoothed:
 		position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() #interpolation test
 
+#	if name == "Player":
+#		print("PLAYER _process")
+
 func _physics_process(_delta: float) -> void:
 	if local_smoothed: position = previous_physics_position # interpolation test
 	velocity = velocity.clamp(-max_velocity, max_velocity)
 	move_and_slide()
 	if local_smoothed: previous_physics_position = position #interpolation test
+
+#	if name == "Player":
+#		print("PLAYER _physics_process")

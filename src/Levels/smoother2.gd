@@ -22,13 +22,32 @@ extends Node
 #   e.g. do we need a mode where we don't follow the parent children but only apply includes, i.e. includes only either as an enum mode or a simple bool
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
-# - there's a bug where sometimes
+
+# THOUGHTS:
+# I think there's currently a problem because in _process the code assumes the target position
+# purely based on velocity, so the position may be set to one frame early and this is
+# very noticeable when either there was a collision (where the sprite may go partly through
+# a wall for 1 physics frame, or where the movement is not even, e.g. decreasing velocity while
+# jumping up. So instead of looking ahead, the position should rather be calculated one
+# physics frame behind after any collision detection and velocity changes have been calculated
+
+# BUG:
+# This doesn't work well if e.g. the smoother is somewhere nested but should update a parent or
+# includes node elsewhere, probably because of the order in which the _physics_process and
+# _process runs
+# I should rethink the entire structure, maybe I'm trying to add too many bells and whistles where
+# it should simply be attached to a scene's root node and be done with
+# At the very least we should store the initial parent node, then change the parent
+# to owner, then perform move_child. I tried changing the parent to owner but no luck.
+
+# After all I seem to be overthinking this. Maybe just add a note that even if includes are added
+# that these must be a child of the smoother parent.
 
 @export var recursive: = true
 @export var includes: Array[NodePath] = []
 @export var excludes: Array[NodePath] = []
 
-
+var _original_parent: Node
 var _positions := {}
 var _physics_process_nodes: Array[Node]
 var _physics_process_just_updated: = false
@@ -36,17 +55,22 @@ var _physics_process_just_updated: = false
 
 func _process(_delta: float) -> void:
 	# position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() # local smoothing approach
-	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
+#	var physics_interpolation_fraction: = Engine.get_physics_interpolation_fraction()
+
+#	print("SMOOTHER 2 _process")
 
 	for child in _physics_process_nodes:
-		if _positions.has(child) && _positions[child].size() == 2:
+		if _positions.has(child):
 			if _physics_process_just_updated:
-				child.position = _positions[child][0]
-			child.position = _positions[child][0].lerp(_positions[child][1], physics_interpolation_fraction)
-#			child.position = _positions[child][0] + child.velocity * child.get_physics_process_delta_time() * physics_interpolation_fraction
+				_positions[child] = child.position
+#				print("  _positions[child] = ", child.position)
 
-	if _physics_process_just_updated:
-		_physics_process_just_updated = false
+			child.position = _positions[child] + child.velocity * child.get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction()
+#			child.position = _positions[child].lerp(_positions[child] + child.velocity * child.get_physics_process_delta_time(), Engine.get_physics_interpolation_fraction())
+
+#			print("  child.position = ", _positions[child], " + etc.")
+
+	_physics_process_just_updated = false
 
 
 func _physics_process(_delta: float) -> void:
@@ -55,30 +79,29 @@ func _physics_process(_delta: float) -> void:
 
 	if parent == null: return
 
-#	print("SMOOTHER _physics_process")
+#	print("SMOOTHER 2 _physics_process")
 
 	# move this node to the bottom of the parent tree (typically a scene's root node) so that it is called after all other _physics_processes have been completed
-	parent.move_child(self, -1)
+#	parent.move_child(self, -1)
+	parent.move_child(self, 0)
 
 	# it's enough to update the relevant physics process nodes once per _physics_process
 	_physics_process_nodes = _get_physics_process_nodes(parent)
 
-	print(_physics_process_nodes.map(func (node): return node.name))
-
 	for node in _physics_process_nodes:
 		if (!_positions.has(node)):
 			# only called on the first frame after this node was added to _positions
-			_positions[node] = [node.position]
+			_positions[node] = node.position
+
 			# clean up _positions when a node exited the tree
 			node.tree_exited.connect(func (): _positions.erase(node))
-		elif (_positions[node].size() < 2):
-			# only called on the second frame after this node was added to _positions
-			_positions[node].push_front(_positions[node][0])
-			_positions[node][1] = node.position
+
+#			print("  _positions[node] = ", node.position)
 		else:
-			_positions[node][0] = _positions[node][1]
-			_positions[node][1] = node.position
-			node.position = _positions[node][0]
+			node.position = _positions[node]
+#			print("  node.position = ", _positions[node])
+
+#		_positions[node] = node.position
 
 	_physics_process_just_updated = true
 
@@ -111,6 +134,8 @@ func _physics_process(_delta: float) -> void:
 #
 #			if recursive && node.get_child_count() > 0:
 #				nodes.append_array(_get_physics_process_nodes(node))
+#
+##	print("RELEVANT NODES", nodes.map(func (node): return node.name))
 #
 #	return nodes
 
