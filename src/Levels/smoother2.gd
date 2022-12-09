@@ -51,6 +51,7 @@ var _original_parent: Node
 var _positions := {}
 var _physics_process_nodes: Array[Node]
 var _physics_process_just_updated: = false
+var _physics_process_counter: = 0
 
 
 func _process(_delta: float) -> void:
@@ -59,18 +60,21 @@ func _process(_delta: float) -> void:
 
 #	print("SMOOTHER 2 _process")
 
-	for child in _physics_process_nodes:
-		if _positions.has(child):
+	for node in _physics_process_nodes:
+		if _positions.has(node):
 			if _physics_process_just_updated:
-				_positions[child] = child.position
-#				print("  _positions[child] = ", child.position)
+				_physics_process_counter = 0
+				_positions[node] = node.position
+#				print("  _positions[node] = ", node.position)
 
-			child.position = _positions[child] + child.velocity * child.get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction()
-#			child.position = _positions[child].lerp(_positions[child] + child.velocity * child.get_physics_process_delta_time(), Engine.get_physics_interpolation_fraction())
+#			node.position = _positions[node] + node.velocity * node.get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction()
+#			node.position = _positions[node].lerp(_positions[node] + node.velocity * node.get_physics_process_delta_time(), Engine.get_physics_interpolation_fraction())
+			node.position = _positions[node].lerp(_positions[node] - node.velocity * node.get_physics_process_delta_time(), 1 - Engine.get_physics_interpolation_fraction())
 
-#			print("  child.position = ", _positions[child], " + etc.")
+#			print("  node.position = ", _positions[node], " + etc.")
 
 	_physics_process_just_updated = false
+	_physics_process_counter += 1
 
 
 func _physics_process(_delta: float) -> void:
@@ -79,7 +83,7 @@ func _physics_process(_delta: float) -> void:
 
 	if parent == null: return
 
-#	print("SMOOTHER 2 _physics_process")
+	print("SMOOTHER 2 _physics_process (", _physics_process_counter, " physics processes)")
 
 	# move this node to the bottom of the parent tree (typically a scene's root node) so that it is called after all other _physics_processes have been completed
 #	parent.move_child(self, -1)

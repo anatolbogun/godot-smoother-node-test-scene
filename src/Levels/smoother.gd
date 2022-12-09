@@ -63,7 +63,7 @@ func _physics_process(_delta: float) -> void:
 	# it's enough to update the relevant physics process nodes once per _physics_process
 	_physics_process_nodes = _get_physics_process_nodes(parent)
 
-	print(_physics_process_nodes.map(func (node): return node.name))
+#	print(_physics_process_nodes.map(func (node): return node.name))
 
 	for node in _physics_process_nodes:
 		if (!_positions.has(node)):
