@@ -18,6 +18,9 @@ extends Actor
 
 @export var stomp_impulse: = 1000.0
 
+func _ready() -> void:
+	$Label.text = name
+
 func _on_enemy_detector_area_entered(_area: Area2D) -> void:
 	velocity = calculate_stomp_velocity(stomp_impulse)
 

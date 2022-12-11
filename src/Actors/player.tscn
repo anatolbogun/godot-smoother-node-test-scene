@@ -13,6 +13,13 @@ size = Vector2(94, 86)
 collision_mask = 8
 script = ExtResource("1_nrl78")
 
+[node name="Label" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -96.0
+offset_right = 48.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Player" type="Sprite2D" parent="."]
 position = Vector2(0, -48)
 texture = ExtResource("1_8a4pw")
