@@ -1,6 +1,9 @@
 extends Node
 
 # NOTE:
+# - Smoother2 has a bug where on collision detection can cause skipping interpolation,
+#   so Smoother is the better approach and it also doesn't rely on sprite velocity in the
+#   _physics process which should make it easier to add interpolation for rotation, scale, etc.
 # - For this to work this node must be at the top of the scene tree. Hence
 #   get_parent().move_child(self, 0)
 # - manual (flawed?) alternative that needs to be applied in each physics object:
