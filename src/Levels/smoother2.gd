@@ -33,7 +33,6 @@ extends Node
 @export var includes: Array[NodePath] = []
 @export var excludes: Array[NodePath] = []
 
-var _original_parent: Node
 var _positions := {}
 var _physics_process_nodes: Array[Node]
 var _physics_process_just_updated: = false
@@ -47,7 +46,6 @@ func _process(_delta: float) -> void:
 			if _physics_process_just_updated:
 				_positions[node] = node.position
 
-#			node.position = _positions[node] + node.velocity * node.get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction()
 			node.position = _positions[node].lerp(_positions[node] - node.velocity * node.get_physics_process_delta_time(), 1 - Engine.get_physics_interpolation_fraction())
 
 	_physics_process_just_updated = false

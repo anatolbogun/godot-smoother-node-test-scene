@@ -39,15 +39,15 @@ sources/2 = SubResource("TileSetAtlasSource_m7mx0")
 script = ExtResource("1_jn24k")
 
 [node name="Smoother" type="Node" parent="."]
-process_mode = 4
 script = ExtResource("2_8i7dr")
 recursive = false
-includes = [NodePath("../NestedTest/Player2")]
+includes = [NodePath("../NestedTest/PlayerSmoother")]
 
 [node name="Smoother2" type="Node" parent="."]
+process_mode = 4
 script = ExtResource("3_jlqfd")
 recursive = false
-includes = [NodePath("../NestedTest/Player3")]
+includes = [NodePath("../NestedTest/PlayerSmoother2")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -68,17 +68,16 @@ layer_0/tile_data = PackedInt32Array(0, 2, 0, 65536, 2, 0, 131072, 2, 0, 196608,
 [node name="NestedTest" type="Node" parent="."]
 
 [node name="Player" parent="NestedTest" instance=ExtResource("2_m8x0h")]
-process_mode = 4
 position = Vector2(205, 148)
 safe_margin = 3.0
 
-[node name="Player2" parent="NestedTest" instance=ExtResource("2_m8x0h")]
-process_mode = 4
+[node name="PlayerSmoother" parent="NestedTest" instance=ExtResource("2_m8x0h")]
 modulate = Color(0, 0, 1, 1)
 position = Vector2(205, 148)
 safe_margin = 3.0
 
-[node name="Player3" parent="NestedTest" instance=ExtResource("2_m8x0h")]
+[node name="PlayerSmoother2" parent="NestedTest" instance=ExtResource("2_m8x0h")]
+process_mode = 4
 modulate = Color(1, 0, 1, 1)
 position = Vector2(205, 148)
 safe_margin = 3.0
