@@ -1,8 +1,12 @@
 extends Node
 
 # NOTE:
-# - For this to work this node must be at the bottom of the scene tree. Hence
-#   get_parent().move_child(self, -1)
+# - This node can only be applied to siblings or (if recursive is true) children or nested children
+#   of this node or its siblings.
+# - The most common scenario is to make it a direct child of the root node, e.g. in a level scene.
+#   By default it will then smooth all children and deep nested children in the same scene tree.
+# - For this to work this node must be at the top of the scene tree. Hence
+#   get_parent().move_child(self, 0)
 # - For easier understanding consider:
 #	_positions[child][0] is the origin position
 #	_positions[child][1] is the target position
@@ -15,14 +19,10 @@ extends Node
 #	previous_physics_position = position
 
 # TO DO:
-# - running a smoothed and not smoothed player sprite simultaneously shows that the
-#   smoothed one is slightly slower (maybe need to take delta time into account)?
-# - check if collision detection really works reliably, this seems a bit sketchy
 # - consider if we need any extra properties such as recursive, includes and excludes (not even sure about the last 2)
 #   e.g. do we need a mode where we don't follow the parent children but only apply includes, i.e. includes only either as an enum mode or a simple bool
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
-# - there's a bug where sometimes
 
 @export var recursive: = true
 @export var includes: Array[NodePath] = []

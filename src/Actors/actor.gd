@@ -7,6 +7,9 @@ class_name Actor
 
 var previous_physics_position
 
+func _ready() -> void:
+	pass
+
 func _enter_tree() -> void:
 	previous_physics_position = position
 

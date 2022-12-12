@@ -39,6 +39,7 @@ sources/2 = SubResource("TileSetAtlasSource_m7mx0")
 script = ExtResource("1_jn24k")
 
 [node name="Smoother" type="Node" parent="."]
+process_mode = 4
 script = ExtResource("2_8i7dr")
 recursive = false
 includes = [NodePath("../NestedTest/S1")]
@@ -76,6 +77,10 @@ safe_margin = 3.0
 modulate = Color(0, 1, 0, 0.501961)
 position = Vector2(205, 148)
 safe_margin = 3.0
+
+[node name="SmootherCopy" type="Node" parent="NestedTest/S1"]
+script = ExtResource("2_8i7dr")
+recursive = false
 
 [node name="S2" parent="NestedTest" instance=ExtResource("2_m8x0h")]
 process_mode = 4

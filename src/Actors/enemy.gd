@@ -1,6 +1,7 @@
 extends "res://src/Actors/actor.gd"
 
 func _ready() -> void:
+	super()
 	velocity.x = -max_velocity.x
 
 func _on_stomp_detector_body_entered(body: Node2D) -> void:
