@@ -24,6 +24,14 @@ extends Node
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
 
+@export var smooth_parent: = false :
+	set (value):
+		if value == false:
+			# remove parent from _positions in case this gets toggled on and off during runtime
+			_positions.erase(get_parent())
+
+		smooth_parent = value
+
 @export var recursive: = true
 @export var includes: Array[NodePath] = []
 @export var excludes: Array[NodePath] = []
@@ -31,6 +39,22 @@ extends Node
 var _positions := {}
 var _physics_process_nodes: Array[Node]
 var _physics_process_just_updated: = false
+
+
+# resets a node, array of nodes or all smoothed nodes in the _positions dictionary;
+# you may want to call this when a sprite gets teleported
+# TO DO: test this
+func reset(nodes) -> void:
+	if nodes.typeof(Node):
+		nodes = [nodes]
+
+	if nodes.typeof(TYPE_ARRAY):
+		print("resetting ", nodes)
+		for node in nodes:
+			_positions.erase(node)
+	else:
+		print("resetting all")
+		_positions.clear()
 
 
 func _process(_delta: float) -> void:
@@ -50,11 +74,17 @@ func _physics_process(_delta: float) -> void:
 	var parent: = get_parent()
 	if parent == null: return
 
+	if smooth_parent:
+		process_priority = parent.process_priority - 1
+
 	# move this node to the top of the parent tree (typically a scene's root node) so that it is called before all other _physics_processes
 	parent.move_child(self, 0)
 
+	if smooth_parent:
+		process_priority = parent.process_priority - 1
+
 	# it's enough to update the relevant physics process nodes once per _physics_process
-	_physics_process_nodes = _get_physics_process_nodes(parent)
+	_physics_process_nodes = _get_physics_process_nodes(parent, !smooth_parent, true)
 
 	for node in _physics_process_nodes:
 		if (!_positions.has(node)):
@@ -75,7 +105,7 @@ func _physics_process(_delta: float) -> void:
 
 
 # get scene children that ignore any nodes that don't have a _physics_process overwrite
-func _get_physics_process_nodes(node: Node, withIncludes: = true) -> Array[Node]:
+func _get_physics_process_nodes(node: Node, ignoreNode: = false, withIncludes: = false) -> Array[Node]:
 	var nodes: Array[Node] = includes.map( func (include): return get_node_or_null(include)).filter(func (node): return node != null) if withIncludes else []
 
 	# TO DO: this may not be necessary because the smoother node does not work applied to a parent,
@@ -85,11 +115,11 @@ func _get_physics_process_nodes(node: Node, withIncludes: = true) -> Array[Node]
 	# will do nothing because the root node doesn't validate. However, if the parent node would
 	# validate we would get erratic movements because the _physics_process and _process of the
 	# smoother node being a child of the node to be smoothed gets called after, not before.
-	if node != self && !nodes.has(node) && !excludes.has(get_path_to(node)) && node.has_method("_physics_process") && node.get("position"):
+	if !ignoreNode && node != self && !nodes.has(node) && !excludes.has(get_path_to(node)) && node.has_method("_physics_process") && node.get("position"):
 		nodes.push_back(node)
 
 	if recursive:
 		for child in node.get_children():
-			nodes.append_array(_get_physics_process_nodes(child, false))
+			nodes.append_array(_get_physics_process_nodes(child))
 
 	return nodes

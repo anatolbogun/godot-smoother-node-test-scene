@@ -80,6 +80,7 @@ safe_margin = 3.0
 
 [node name="SmootherCopy" type="Node" parent="NestedTest/S1"]
 script = ExtResource("2_8i7dr")
+smooth_parent = true
 recursive = false
 
 [node name="S2" parent="NestedTest" instance=ExtResource("2_m8x0h")]
