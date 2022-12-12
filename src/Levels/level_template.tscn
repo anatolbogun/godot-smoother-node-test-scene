@@ -44,6 +44,7 @@ recursive = false
 includes = [NodePath("../NestedTest/S1")]
 
 [node name="Smoother2" type="Node" parent="."]
+process_mode = 4
 script = ExtResource("3_jlqfd")
 recursive = false
 includes = [NodePath("../NestedTest/S2")]
@@ -67,6 +68,7 @@ layer_0/tile_data = PackedInt32Array(0, 2, 0, 65536, 2, 0, 131072, 2, 0, 196608,
 [node name="NestedTest" type="Node" parent="."]
 
 [node name="Player" parent="NestedTest" instance=ExtResource("2_m8x0h")]
+process_mode = 4
 position = Vector2(205, 148)
 safe_margin = 3.0
 
@@ -76,6 +78,7 @@ position = Vector2(205, 148)
 safe_margin = 3.0
 
 [node name="S2" parent="NestedTest" instance=ExtResource("2_m8x0h")]
+process_mode = 4
 modulate = Color(1, 0, 1, 0.501961)
 position = Vector2(205, 148)
 safe_margin = 3.0
