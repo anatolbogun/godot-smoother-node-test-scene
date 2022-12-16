@@ -18,12 +18,24 @@ extends Actor
 
 @export var stomp_impulse: = 1000.0
 
+var origin: Vector2
+
+signal teleport_started
+
 func _ready() -> void:
 	super()
 	$Label.text = name
+	origin = position
 
 func _on_enemy_detector_area_entered(area: Area2D) -> void:
-	velocity = calculate_stomp_velocity(stomp_impulse)
+	if area.is_in_group("portals"):
+		emit_signal("teleport_started", self)
+		position = origin
+		velocity = Vector2.ZERO
+	else:
+		velocity = calculate_stomp_velocity(stomp_impulse)
+
+
 
 func _on_enemy_detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("enemies"):

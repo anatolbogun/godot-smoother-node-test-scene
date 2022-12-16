@@ -45,12 +45,17 @@
 #   and _process code must be applied before any other nodes.
 # - When smooth_parent is enabled the process_priority will be kept at a lower value than the
 #   parent's, i.e. it will be processed earlier.
+# - When teleporting a sprite you may want to call reset(node) for the affected sprite/s, otherwise
+#   a teleport (changing the sprite's position) may not work as expected.
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
 #
 # LIMITATIONS:
-# - Currently this does not work with RigidBody2D or RigidBody3D nodes.
+# - Currently this does not work with RigidBody2D or RigidBody3D nodes. Please check out
+#   https://github.com/lawnjelly/smoothing-addon/ which has a more complicated setup but has more
+#   precision and less limitations. Or help to make this code work with rigid bodies if it's
+#   possible at all.
 # - Interpolation is one _physics_process step behind because we need to know the origin and target
 #   value for an interpolation to occur, so in a typical scenario this means a delay of 1/60 second
 #   which is the default physics_ticks_per_second in the project settings.
@@ -59,9 +64,7 @@
 #   to the ground, interpolation will still occur on all _physics frames between which may have a
 #   slight impact cushioning effect. However, with 60 physics fps this is hopefully negligible.
 
-# TO DO:
-# - may need something similar for rotations, etc. and export vars to include these properties;
-#   need to check what is potentially affected by _physics_process
+
 class_name Smoother extends Node
 
 
@@ -84,17 +87,14 @@ var _physics_process_just_updated: = false
 
 # resets a node, array of nodes or all smoothed nodes in the _positions dictionary;
 # you may want to call this when a sprite gets teleported
-# TO DO: test this
-func reset(nodes) -> void:
-	if nodes.typeof(Node):
+func reset(nodes = null) -> void:
+	if nodes is Node:
 		nodes = [nodes]
 
-	if nodes.typeof(TYPE_ARRAY):
-		print("resetting ", nodes)
+	if nodes is Array:
 		for node in nodes:
 			_positions.erase(node)
 	else:
-		print("resetting all")
 		_positions.clear()
 
 
