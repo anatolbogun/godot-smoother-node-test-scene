@@ -14,6 +14,10 @@ collision_mask = 8
 floor_constant_speed = true
 script = ExtResource("1_nrl78")
 
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0, -48.5)
+scale = Vector2(5.1, 5.05)
+
 [node name="Label" type="Label" parent="."]
 offset_left = -48.0
 offset_top = -96.0
@@ -52,5 +56,7 @@ modulate = Color(0.2075, 0, 0.83, 1)
 position = Vector2(0, -43)
 shape = SubResource("RectangleShape2D_dupx4")
 
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]
 [connection signal="area_entered" from="EnemyDetector" to="." method="_on_enemy_detector_area_entered"]
 [connection signal="body_entered" from="EnemyDetector" to="." method="_on_enemy_detector_body_entered"]

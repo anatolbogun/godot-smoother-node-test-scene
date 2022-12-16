@@ -7,18 +7,37 @@ class_name Actor
 
 var previous_physics_position
 
+signal screen_entered
+signal screen_exited
+
+# TO DO:
+# Better to automatically add a VisibleOnScreenNotifier2D in _ready and hook it up by code
+# otherwise this'll get tedious and I'll probably forget this half the time.
+
+
 func _ready() -> void:
 	pass
+
 
 func _enter_tree() -> void:
 	previous_physics_position = position
 
+
 func _process(_delta: float) -> void:
 	if local_smoothed:
 		position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() #interpolation test
+
 
 func _physics_process(_delta: float) -> void:
 	if local_smoothed: position = previous_physics_position # interpolation test
 	velocity = velocity.clamp(-max_velocity, max_velocity)
 	move_and_slide()
 	if local_smoothed: previous_physics_position = position #interpolation test
+
+
+func _on_screen_entered() -> void:
+	emit_signal("screen_entered", self)
+
+
+func _on_screen_exited() -> void:
+	emit_signal("screen_exited", self)

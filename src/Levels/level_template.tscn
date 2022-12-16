@@ -80,4 +80,11 @@ position = Vector2(2220, 556)
 [node name="Enemy3" parent="NestedTest" instance=ExtResource("3_ehuom")]
 position = Vector2(3056, 556)
 
+[connection signal="screen_entered" from="Player" to="." method="_on_node_screen_entered"]
 [connection signal="teleport_started" from="Player" to="." method="_on_player_teleport_started"]
+[connection signal="screen_entered" from="NestedTest/Enemy1" to="." method="_on_node_screen_entered"]
+[connection signal="screen_exited" from="NestedTest/Enemy1" to="." method="_on_node_screen_exited"]
+[connection signal="screen_entered" from="NestedTest/Enemy2" to="." method="_on_node_screen_entered"]
+[connection signal="screen_exited" from="NestedTest/Enemy2" to="." method="_on_node_screen_exited"]
+[connection signal="screen_entered" from="NestedTest/Enemy3" to="." method="_on_node_screen_entered"]
+[connection signal="screen_exited" from="NestedTest/Enemy3" to="." method="_on_node_screen_exited"]

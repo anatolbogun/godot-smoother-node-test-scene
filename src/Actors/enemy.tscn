@@ -14,6 +14,10 @@ collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_1mia5")
 
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0, -48.5)
+scale = Vector2(5.1, 5.05)
+
 [node name="Enemy" type="Sprite2D" parent="."]
 position = Vector2(0, -48)
 texture = ExtResource("1_v36i4")
@@ -35,4 +39,6 @@ modulate = Color(0.25098, 0, 1, 1)
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_f3u7e")
 
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]
 [connection signal="body_entered" from="StompDetector" to="." method="_on_stomp_detector_body_entered"]

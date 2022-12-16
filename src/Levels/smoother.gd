@@ -47,6 +47,9 @@
 #   parent's, i.e. it will be processed earlier.
 # - When teleporting a sprite you may want to call reset(node) for the affected sprite/s, otherwise
 #   a teleport (changing the sprite's position) may not work as expected.
+# - For large levels you may want to optimise things (as you probably should regardless of using the
+#   Smoother node). For example use the VisibleOnScreenNotifier2D to update the includes or excludes
+#   arrays.
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
