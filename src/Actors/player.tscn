@@ -11,6 +11,7 @@ size = Vector2(94, 86)
 
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 8
+floor_constant_speed = true
 script = ExtResource("1_nrl78")
 
 [node name="Label" type="Label" parent="."]
