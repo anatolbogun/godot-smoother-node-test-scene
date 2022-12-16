@@ -14,12 +14,8 @@ func _enter_tree() -> void:
 	previous_physics_position = position
 
 func _process(_delta: float) -> void:
-#	if Engine.get_frames_per_second() > Engine.physics_ticks_per_second:
 	if local_smoothed:
 		position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() #interpolation test
-
-#	if name == "Player":
-#		print("PLAYER _process")
 
 func _physics_process(_delta: float) -> void:
 	if local_smoothed: position = previous_physics_position # interpolation test
@@ -27,5 +23,5 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 	if local_smoothed: previous_physics_position = position #interpolation test
 
-#	if name == "Player":
-#		print("PLAYER _physics_process")
+func get_collision_layer_name(index: int) -> String:
+	return ProjectSettings.get_setting("layer_names/2d_physics/layer_" + str(index))

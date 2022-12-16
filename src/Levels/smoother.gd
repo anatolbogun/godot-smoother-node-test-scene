@@ -1,4 +1,4 @@
-# MIT License
+# MIT LICENSE
 #
 # Copyright 2022 Anatol Bogun
 #
@@ -18,6 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 #
+# SMOOTHER NODE
+# -------------
+#
+# This node interpolates the position of other nodes between their _physics_process es. The
+# interpolation is applied in the _process loop which ensures that nodes move smoothly, even if the
+# _physics_process is called less often than the games fps rate which is typically synced to the
+# current screen's refresh rate.
+#
 # NOTES:
 # - By default this node applies to its parent, siblings and recursive children. Nodes that have no
 #   custom _physics_process code or a position property are automatically ignored.
@@ -28,6 +36,11 @@
 #   includes option and disable smooth_parent and recursive, or give each node that should be
 #   smoothed a Smoother node child with the recursive option off.
 # - The excludes option ignores nodes that would otherwise be covered by other Smoother options.
+# - Collision detection still happens in the _physics_process, so if the physics_ticks_per_second
+#   in the project settings are too low you may experience seemingly incorrect or punishing
+#   collision detection. The default 60 physics_ticks_per_second should a good value. To test this
+#   node you may want to temporarily reduce physics ticks to a lower value and toggle this node on
+#   and off.
 # - The code will keep this node as the first child of the parent node because its _physics_process
 #   and _process code must be applied before any other nodes.
 # - When smooth_parent is enabled the process_priority will be kept at a lower value than the
@@ -35,6 +48,16 @@
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
+#
+# LIMITATIONS:
+# - Currently this does not work with RigidBody2D or RigidBody3D nodes.
+# - Interpolation is one _physics_process step behind because we need to know the origin and target
+#   value for an interpolation to occur, so in a typical scenario this means a delay of 1/60 second
+#   which is the default physics_ticks_per_second in the project settings.
+# - Interpolation does not look ahead for collision detection. That means that if for example a
+#   sprite falls to hit the ground and the last _physics_process step before impact is very close
+#   to the ground, interpolation will still occur on all _physics frames between which may have a
+#   slight impact cushioning effect. However, with 60 physics fps this is hopefully negligible.
 
 # TO DO:
 # - may need something similar for rotations, etc. and export vars to include these properties;
@@ -81,7 +104,10 @@ func _process(_delta: float) -> void:
 			if _physics_process_just_updated:
 				_positions[node][1] = node.position
 
-			node.position = _positions[node][0].lerp(_positions[node][1], Engine.get_physics_interpolation_fraction())
+			node.position = _positions[node][0].lerp(
+				_positions[node][1],
+				Engine.get_physics_interpolation_fraction()
+			)
 #
 	_physics_process_just_updated = false
 
@@ -90,24 +116,25 @@ func _physics_process(_delta: float) -> void:
 	var parent: = get_parent()
 	if parent == null: return
 
-	# move this node to the top of the parent tree (typically a scene's root node) so that it is called before all other _physics_processes
+	# move this node to the top of the parent tree (typically a scene's root
+	# node) so that it is called before all other _physics_processes
 	parent.move_child(self, 0)
 
 	if smooth_parent:
 		process_priority = parent.process_priority - 1
 
-	# it's enough to update the relevant physics process nodes once per _physics_process
+	# update the relevant nodes once per _physics_process
 	_physics_process_nodes = _get_physics_process_nodes(parent, !smooth_parent)
 
 	for node in _physics_process_nodes:
 		if (!_positions.has(node)):
-			# only called on the first frame after this node was added to _positions
+			# called on the first frame after this node was added to _positions
 			_positions[node] = [node.position]
 
 			# clean up _positions when a node exited the tree
 			node.tree_exited.connect(func (): _positions.erase(node))
 		elif (_positions[node].size() < 2):
-			# only called on the second frame after this node was added to _positions
+			# called on the second frame after this node was added to _positions
 			_positions[node].push_front(_positions[node][0])
 			_positions[node][1] = node.position
 		else:
@@ -117,11 +144,21 @@ func _physics_process(_delta: float) -> void:
 	_physics_process_just_updated = true
 
 
-# get scene children that ignore any nodes that don't have a _physics_process overwrite
+# get relevant nodes to be smoothed
 func _get_physics_process_nodes(node: Node, ignoreNode: = false, withIncludes: = true) -> Array[Node]:
-	var nodes: Array[Node] = includes.map( func (include): return get_node_or_null(include)).filter(func (node): return node != null) if withIncludes else []
+	var nodes: Array[Node] = includes.map(
+		func (include): return get_node_or_null(include)
+	).filter(
+		func (node): return node != null
+	) if withIncludes else []
 
-	if !ignoreNode && node != self && !nodes.has(node) && !excludes.has(get_path_to(node)) && node.has_method("_physics_process") && node.get("position"):
+	if (!ignoreNode
+		&& node != self
+		&& !nodes.has(node)
+		&& !excludes.has(get_path_to(node))
+		&& node.has_method("_physics_process")
+		&& node.get("position")
+	):
 		nodes.push_back(node)
 
 	if recursive:

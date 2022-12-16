@@ -22,11 +22,12 @@ func _ready() -> void:
 	super()
 	$Label.text = name
 
-func _on_enemy_detector_area_entered(_area: Area2D) -> void:
+func _on_enemy_detector_area_entered(area: Area2D) -> void:
 	velocity = calculate_stomp_velocity(stomp_impulse)
 
-func _on_enemy_detector_body_entered(_body: Node2D) -> void:
-	get_tree().reload_current_scene()
+func _on_enemy_detector_body_entered(body: Node2D) -> void:
+	if body.is_in_group("enemies"):
+		get_tree().reload_current_scene()
 
 func _physics_process(delta: float) -> void:
 	var is_jump_interrupted: = Input.is_action_just_released("jump") and velocity.y < 0.0
