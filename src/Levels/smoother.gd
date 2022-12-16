@@ -152,7 +152,8 @@ func _get_physics_process_nodes(node: Node, ignoreNode: = false, withIncludes: =
 		func (node): return node != null
 	) if withIncludes else []
 
-	if (!ignoreNode
+	if (
+		!ignoreNode
 		&& node != self
 		&& !nodes.has(node)
 		&& !excludes.has(get_path_to(node))

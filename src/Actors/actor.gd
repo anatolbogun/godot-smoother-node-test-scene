@@ -22,6 +22,3 @@ func _physics_process(_delta: float) -> void:
 	velocity = velocity.clamp(-max_velocity, max_velocity)
 	move_and_slide()
 	if local_smoothed: previous_physics_position = position #interpolation test
-
-func get_collision_layer_name(index: int) -> String:
-	return ProjectSettings.get_setting("layer_names/2d_physics/layer_" + str(index))
