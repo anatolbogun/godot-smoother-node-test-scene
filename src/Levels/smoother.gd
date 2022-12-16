@@ -1,26 +1,46 @@
-class_name Smoother extends Node
-
+# MIT License
+#
+# Copyright 2022 Anatol Bogun
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+# associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+# NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+#
 # NOTES:
 # - By default this node applies to its parent, siblings and recursive children. Nodes that have no
-#   cutom _physics_process code or a position property are automatically ignored.
+#   custom _physics_process code or a position property are automatically ignored.
 # - The most common scenario is to make it a direct child of the root node, e.g. in a level scene.
-#   By default it will then smooth all children and deep nested children in the same scene tree.
+#   By default it will then smooth the parent, all children and deep nested children in the same
+#   scene tree.
 # - If the smoother should be applied to only specific nodes, just select those nodes in the
 #   includes option and disable smooth_parent and recursive, or give each node that should be
 #   smoothed a Smoother node child with the recursive option off.
+# - The excludes option ignores nodes that would otherwise be covered by other Smoother options.
 # - The code will keep this node as the first child of the parent node because its _physics_process
 #   and _process code must be applied before any other nodes.
-# - When smooth_parent is enabled the process_priority will be kept at a lower (i.e. earlier) value
-#   than the parent's
+# - When smooth_parent is enabled the process_priority will be kept at a lower value than the
+#   parent's, i.e. it will be processed earlier.
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
 
 # TO DO:
-# - consider if we need any extra properties such as recursive, includes and excludes (not even sure about the last 2)
-#   e.g. do we need a mode where we don't follow the parent children but only apply includes, i.e. includes only either as an enum mode or a simple bool
 # - may need something similar for rotations, etc. and export vars to include these properties;
 #   need to check what is potentially affected by _physics_process
+class_name Smoother extends Node
+
 
 @export var smooth_parent: = true :
 	set (value):
