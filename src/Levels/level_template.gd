@@ -12,8 +12,10 @@ func _on_node_teleport_started(node) -> void:
 func _on_node_screen_entered(node:Node) -> void:
 	var excludes = $Smoother.remove_exclude_node(node)
 	print("smoothed nodes: ", $Smoother.smoothed_nodes.map(func (node:Node): return node.name))
+#	print("_positions: ", $Smoother._positions.keys().map(func (key:Node): return key.name))
 
 
 func _on_node_screen_exited(node:Node) -> void:
 	var excludes = $Smoother.add_exclude_node(node)
 	print("smoothed nodes: ", $Smoother.smoothed_nodes.map(func (node:Node): return node.name))
+#	print("_positions: ", $Smoother._positions.keys().map(func (key:Node): return key.name))

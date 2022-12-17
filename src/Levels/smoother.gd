@@ -134,15 +134,13 @@ func remove_include_path(path:NodePath) -> Array:
 	return _remove_all_from_array(includes, path)
 
 
-# add a Node to the excludes Array[NodePath]; resets the Node in _positions
+# add a Node to the excludes Array[NodePath]
 func add_exclude_node(node:Node) -> Array:
 	return add_exclude_path(get_path_to(node))
 
 
-# add a NodePath to the excludes Array[NodePath]; resets the Node in _positions
+# add a NodePath to the excludes Array[NodePath]
 func add_exclude_path(path:NodePath) -> Array:
-	# reset the node path so that if the node is smoothed again later we don't store an old position
-	reset_node_path(path)
 	return _add_unique_to_array(excludes, path)
 
 
@@ -203,6 +201,11 @@ func _physics_process(_delta: float) -> void:
 
 	# update the relevant nodes once per _physics_process
 	_physics_process_nodes = _get_physics_process_nodes(parent, !smooth_parent)
+
+	# clean up _positions
+	for key in _positions.keys():
+		if !_physics_process_nodes.has(key):
+			_positions.erase(key)
 
 	for node in _physics_process_nodes:
 		if (!_positions.has(node)):
