@@ -80,27 +80,96 @@ class_name Smoother extends Node
 		smooth_parent = value
 
 @export var recursive: = true
-@export var includes: Array[NodePath] = []
-@export var excludes: Array[NodePath] = []
+@export var includes:Array[NodePath] = []
+@export var excludes:Array[NodePath] = []
+
+var smoothed_nodes:Array[Node] :
+	get:
+		var parent: = get_parent()
+		return _get_physics_process_nodes(parent, !smooth_parent) if parent != null else []
 
 var _positions := {}
-var _physics_process_nodes: Array[Node]
+var _physics_process_nodes:Array[Node]
 var _physics_process_just_updated: = false
 
 
-# resets a node, array of nodes or all smoothed nodes in the _positions dictionary;
-# you may want to call this when a sprite gets teleported
-func reset(nodes = null) -> void:
-	if nodes is Node:
-		nodes = [nodes]
-
-	if nodes is Array:
-		for node in nodes:
-			_positions.erase(node)
-	else:
-		_positions.clear()
+# reset all smoothed nodes
+func reset() -> void:
+	_positions.clear()
 
 
+# reset a specific node; you may want to call this when a node gets teleported
+func reset_node(node:Node) -> void:
+	_positions.erase(node)
+
+
+# reset a specific Node by NodePath; you may want to call this when a Node gets teleported
+func reset_node_path(path:NodePath) -> void:
+	var node: = get_node_or_null(path)
+
+	if node != null:
+		reset_node(node)
+
+
+# add a Node to the includes Array[NodePath]
+func add_include_node(node:Node) -> Array:
+	return add_include_path(get_path_to(node))
+
+
+# add a NodePath to the includes Array[NodePath]
+func add_include_path(path:NodePath) -> Array:
+	return _add_unique_to_array(includes, path)
+
+
+# remove a Node from the includes Array[NodePath]
+func remove_include_node(node:Node) -> Array:
+	return remove_include_path(get_path_to(node))
+
+
+# remove a NodePath from the includes Array[NodePath]
+func remove_include_path(path:NodePath) -> Array:
+	return _remove_all_from_array(includes, path)
+
+
+# add a Node to the excludes Array[NodePath]; resets the Node in _positions
+func add_exclude_node(node:Node) -> Array:
+	return add_exclude_path(get_path_to(node))
+
+
+# add a NodePath to the excludes Array[NodePath]; resets the Node in _positions
+func add_exclude_path(path:NodePath) -> Array:
+	# reset the node path so that if the node is smoothed again later we don't store an old position
+	reset_node_path(path)
+	return _add_unique_to_array(excludes, path)
+
+
+# remove a Node from the excludes Array[NodePath]
+func remove_exclude_node(node:Node) -> Array:
+	return remove_exclude_path(get_path_to(node))
+
+
+# remove a NodePath from the excludes Array[NodePath]
+func remove_exclude_path(path:NodePath) -> Array:
+	return _remove_all_from_array(excludes, path)
+
+
+# add an item to an array unless the array already contains that item
+func _add_unique_to_array(array:Array, item) -> Array:
+	if !array.has(item):
+		array.push_back(item)
+
+	return array
+
+
+# remove all array items that match item
+func _remove_all_from_array(array:Array, item) -> Array:
+	while array.has(item):
+		array.erase(item)
+
+	return array
+
+
+# apply interpolation to all smoothed_nodes positions
 func _process(_delta: float) -> void:
 	for node in _physics_process_nodes:
 		if _positions.has(node) && _positions[node].size() == 2:
@@ -115,6 +184,9 @@ func _process(_delta: float) -> void:
 	_physics_process_just_updated = false
 
 
+# store all smoothed_nodes' positions of the previous (origin) and this (target) _physics_process
+# frames for interpolation in the upcoming _process frames until the next _physics_process and apply
+# the origin position
 func _physics_process(_delta: float) -> void:
 	var parent: = get_parent()
 	if parent == null: return
@@ -147,16 +219,16 @@ func _physics_process(_delta: float) -> void:
 	_physics_process_just_updated = true
 
 
-# get relevant nodes to be smoothed
-func _get_physics_process_nodes(node: Node, ignoreNode: = false, withIncludes: = true) -> Array[Node]:
-	var nodes: Array[Node] = includes.map(
+# get relevant nodes to be smoothed based on this node's tree position and properties
+func _get_physics_process_nodes(node: Node, ignore_node: = false, with_includes: = true) -> Array[Node]:
+	var nodes:Array[Node] = includes.map(
 		func (include): return get_node_or_null(include)
 	).filter(
-		func (node): return node != null
-	) if withIncludes else []
+		func (node): return node != null && !excludes.has(node)
+	) if with_includes else []
 
 	if (
-		!ignoreNode
+		!ignore_node
 		&& node != self
 		&& !nodes.has(node)
 		&& !excludes.has(get_path_to(node))

@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dtufmhdchacrd" path="res://assets/portal.png" id="1_i2i51"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_85u72"]
-radius = 69.0
-height = 204.0
+radius = 35.0
+height = 106.0
 
 [node name="Portal" type="Area2D" groups=["portals"]]
 collision_layer = 4

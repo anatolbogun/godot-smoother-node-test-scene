@@ -15,8 +15,8 @@ collision_mask = 9
 script = ExtResource("1_1mia5")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-position = Vector2(0, -48.5)
-scale = Vector2(5.1, 5.05)
+position = Vector2(-0.5, -48)
+scale = Vector2(6.05, 5.1)
 
 [node name="Enemy" type="Sprite2D" parent="."]
 position = Vector2(0, -48)

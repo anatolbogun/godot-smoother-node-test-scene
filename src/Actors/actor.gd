@@ -22,6 +22,15 @@ func _ready() -> void:
 func _enter_tree() -> void:
 	previous_physics_position = position
 
+	if !$VisibleOnScreenNotifier2D.is_on_screen():
+		# onScreenEntered seems to fire automatically, but we also want to know at this point what
+		# nodes are not on screen so that we can implement some performance improvements
+		emit_signal("screen_exited", self)
+
+
+func _exit_tree() -> void:
+	emit_signal("screen_exited", self)
+
 
 func _process(_delta: float) -> void:
 	if local_smoothed:
