@@ -35,7 +35,8 @@
 # - If the smoother should be applied to only specific nodes, just select those nodes in the
 #   includes option and disable smooth_parent and recursive, or give each node that should be
 #   smoothed a Smoother node child with the recursive option off.
-# - The excludes option ignores nodes that would otherwise be covered by other Smoother options.
+# - The excludes option ignores nodes that would otherwise be covered by other Smoother options,
+#   even when the same nodes are listed in includes.
 # - Collision detection still happens in the _physics_process, so if the physics_ticks_per_second
 #   in the project settings are too low you may experience seemingly incorrect or punishing
 #   collision detection. The default 60 physics_ticks_per_second should a good value. To test this
@@ -48,8 +49,9 @@
 # - When teleporting a sprite you may want to call reset(node) for the affected sprite/s, otherwise
 #   a teleport (changing the sprite's position) may not work as expected.
 # - For large levels you may want to optimise things (as you probably should regardless of using the
-#   Smoother node). For example use the VisibleOnScreenNotifier2D to update the includes or excludes
-#   arrays.
+#   Smoother node). A good approach would be to use the VisibleOnScreenNotifier2D to update the
+#   excludes array so that it contains all off-screen nodes that would otherwise be smoothed. Since
+#   excludes overwrite all other Smoother options this is the safest option.
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
@@ -83,6 +85,7 @@ class_name Smoother extends Node
 @export var includes:Array[NodePath] = []
 @export var excludes:Array[NodePath] = []
 
+# get an array of all currently smoothed nodes; mainly for debugging performance optimisations
 var smoothed_nodes:Array[Node] :
 	get:
 		var parent: = get_parent()
