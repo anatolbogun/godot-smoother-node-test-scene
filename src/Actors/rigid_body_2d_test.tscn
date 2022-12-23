@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://0vnarr7nr0c8"]
+[gd_scene load_steps=4 format=3 uid="uid://0vnarr7nr0c8"]
 
 [ext_resource type="Texture2D" uid="uid://d18qhlermi781" path="res://assets/player.png" id="1_beqh0"]
+[ext_resource type="Script" path="res://src/Actors/rigid_body_2d_test.gd" id="1_q3gfr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6s3pj"]
 size = Vector2(95, 94)
@@ -8,10 +9,19 @@ size = Vector2(95, 94)
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 4
 collision_mask = 8
+script = ExtResource("1_q3gfr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 0, 1)
 texture = ExtResource("1_beqh0")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0)

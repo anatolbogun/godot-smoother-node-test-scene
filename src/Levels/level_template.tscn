@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dlcayfjdg7asa"]
+[gd_scene load_steps=11 format=3 uid="uid://bd1moetogq3p5"]
 
 [ext_resource type="Texture2D" uid="uid://brpsio6658dff" path="res://assets/tileset.png" id="1_7183e"]
 [ext_resource type="Script" path="res://src/Levels/level_template.gd" id="1_jn24k"]
@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://faaiosn2r65a" path="res://src/Actors/player.tscn" id="2_m8x0h"]
 [ext_resource type="Texture2D" uid="uid://5j6rkt2kpjvg" path="res://assets/background.png" id="2_tevx5"]
 [ext_resource type="PackedScene" uid="uid://dh2f15aydng55" path="res://src/Actors/enemy.tscn" id="3_ehuom"]
-[ext_resource type="PackedScene" uid="uid://0vnarr7nr0c8" path="res://src/Actors/rigid_body_test.tscn" id="6_ype21"]
+[ext_resource type="PackedScene" uid="uid://0vnarr7nr0c8" path="res://src/Actors/rigid_body_2d_test.tscn" id="6_ype21"]
 [ext_resource type="PackedScene" uid="uid://ctl25toj1rpgd" path="res://src/Actors/portal.tscn" id="8_47pxl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m7mx0"]
@@ -65,7 +65,7 @@ position = Vector2(3348, 251)
 position = Vector2(205, 148)
 safe_margin = 3.0
 
-[node name="RigidBody2DTest" parent="." instance=ExtResource("6_ype21")]
+[node name="RigidBody" parent="." instance=ExtResource("6_ype21")]
 position = Vector2(712, 12)
 collision_mask = 15
 
