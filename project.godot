@@ -17,7 +17,7 @@ _global_script_classes=[{
 "base": "Node",
 "class": &"Smoother",
 "language": &"GDScript",
-"path": "res://src/Levels/smoother.gd"
+"path": "res://src/Classes/smoother.gd"
 }]
 _global_script_class_icons={
 "Actor": "",
