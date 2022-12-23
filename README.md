@@ -1,5 +1,7 @@
 # godot-smoother-node-test-scene
-A simple Godot project to test `_physics_process` smoothing interpolation via the [Godot Smoother Node](https://github.com/anatolbogun/godot-smoother-node).
+A simple Godot 4 project to test `_physics_process` smoothing interpolation via the [Godot Smoother Node](https://github.com/anatolbogun/godot-smoother-node).
+
+This includes a simple 2d and 3d scene.
 
 Simply add the `Smoother` node to a scene to interpolate node movements. See the above linked project for more details.
 
