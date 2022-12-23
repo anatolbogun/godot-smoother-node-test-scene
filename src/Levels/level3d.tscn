@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcrebbigsncml"]
+
+[ext_resource type="PackedScene" uid="uid://d4jur774br36e" path="res://src/Actors/player_3d.tscn" id="1_6bxtq"]
+[ext_resource type="Script" path="res://src/Classes/smoother.gd" id="1_x6182"]
+[ext_resource type="PackedScene" uid="uid://dgjyflru5loph" path="res://src/Actors/rigid_body_3d_test.tscn" id="3_qjxa4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0fvcq"]
+
+[node name="Level3D" type="Node3D"]
+
+[node name="Smoother" type="Node" parent="."]
+script = ExtResource("1_x6182")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.432442, 0.437559, -0.788376, -0.711254, 0.702936, 2.10358e-08, 0.554178, 0.560735, 0.615194, 0, 3.52971, 0)
+
+[node name="Player3D" parent="." instance=ExtResource("1_6bxtq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18252, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.921321, 0.388802, 0, -0.388802, 0.921321, 0, 2.66718, 3.52266)
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -0.5, 2.08165e-12)
+use_collision = true
+size = Vector3(100, 1, 100)
+material = SubResource("StandardMaterial3D_0fvcq")
+
+[node name="RigidBody3D" parent="." instance=ExtResource("3_qjxa4")]

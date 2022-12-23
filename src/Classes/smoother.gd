@@ -249,6 +249,7 @@ func _get_physics_process_nodes(node: Node, ignore_node: = false, with_includes:
 		!ignore_node
 		&& node != self
 		&& !node is RigidBody2D
+		&& !node is RigidBody3D
 		&& !nodes.has(node)
 		&& !excludes.has(get_path_to(node))
 		&& node.has_method("_physics_process")

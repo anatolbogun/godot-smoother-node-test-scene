@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dgjyflru5loph"]
+
+[ext_resource type="Script" path="res://src/Actors/rigid_body_3d_test.gd" id="1_6qf0g"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_puuh2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ov666"]
+
+[node name="RigidBody3D" type="RigidBody3D"]
+transform = Transform3D(0.982903, -0.184123, 0, 0.184123, 0.982903, 0, 0, 0, 1, 1.75243, 4.33441, 0)
+script = ExtResource("1_6qf0g")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 6.96006e-09, 0, 6.87837e-09, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_puuh2")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+material = SubResource("StandardMaterial3D_ov666")

@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4jur774br36e"]
+
+[ext_resource type="Script" path="res://src/Actors/player_3d.gd" id="1_ilhh8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_30rvt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vnamg"]
+albedo_color = Color(0, 1, 0, 1)
+
+[node name="Player3D" type="CharacterBody3D"]
+script = ExtResource("1_ilhh8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_30rvt")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material_override = SubResource("StandardMaterial3D_vnamg")
