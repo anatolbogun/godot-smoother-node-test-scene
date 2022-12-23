@@ -38,20 +38,32 @@
 # - The excludes option ignores nodes that would otherwise be covered by other Smoother options,
 #   even when the same nodes are listed in includes.
 # - Collision detection still happens in the _physics_process, so if the physics_ticks_per_second
-#   in the project settings are too low you may experience seemingly incorrect or punishing
-#   collision detection. The default 60 physics_ticks_per_second should a good value. To test this
+#   value in the project settings is too low you may experience seemingly incorrect or punishing
+#   collision detection. The default 60 physics_ticks_per_second should a good choice. To test this
 #   node you may want to temporarily reduce physics ticks to a lower value and toggle this node on
 #   and off.
 # - The code will keep this node as the first child of the parent node because its _physics_process
-#   and _process code must be applied before any other nodes.
+#   and _process code must run before any other nodes.
 # - When smooth_parent is enabled the process_priority will be kept at a lower value than the
 #   parent's, i.e. it will be processed earlier.
-# - When teleporting a sprite you may want to call reset(node) for the affected sprite/s, otherwise
-#   a teleport (changing the sprite's position) may not work as expected.
-# - For large levels you may want to optimise things (as you probably should regardless of using the
-#   Smoother node). A good approach would be to use the VisibleOnScreenNotifier2D to update the
-#   excludes array so that it contains all off-screen nodes that would otherwise be smoothed. Since
-#   excludes overwrite all other Smoother options this is the safest option.
+# - When teleporting a sprite you may want to call reset_node(node) or reset_node_path(path) for the
+#   affected sprite/s, otherwise a teleport (changing the position) may not work as expected.
+# - Performance optimisations: For large levels you may want to optimise things (as you probably
+#   should regardless of using the Smoother node). A good approach would be to use the
+#   VisibleOnScreenNotifier2D to update the includes or excludes array:
+#   1. Add all off-screen moveable nodes to excludes ($Smoother.add_exclude_node(node)) and remove
+#      them when they come on-screen ($Smoother.remove_exclude_node(node)). Since excludes overwrite
+#      all other Smoother options this is the most flexible option. One caveat is that on entering
+#      the tree, the $VisibleOnScreenNotifier2D does not fire the screen_exited signal, so you may
+#      have to emit this in a Node's func _enter_tree via $VisibleOnScreenNotifier2D.is_on_screen().
+#   2. Add all on-screen moveable nodes to includes ($Smoother.add_include_node(node)) and remove
+#      them when they come off-screen ($Smoother.remove_include_node(node)). Since includes adds
+#      nodes but does not interfere with other options you probably should set the smooth_parent and
+#      recursive options to false. On entering the tree, the VisibleOnScreenNotifier2D
+#      automatically fires the screen_entered signal, so nothing needs to be done.
+#   For both methods it's probably a good idea to emit the screen_exited signal on _exit_tree.
+#   You can always check the currently smoothed nodes, e.g.
+#   print("smoothed nodes: ", $Smoother.smoothed_nodes.map(func (node:Node): return node.name))
 # - For easier understanding of the code, consider:
 #	_positions[node][0] is the origin position
 #	_positions[node][1] is the target position
@@ -91,7 +103,7 @@ var smoothed_nodes:Array[Node] :
 		var parent: = get_parent()
 		return _get_physics_process_nodes(parent, !smooth_parent) if parent != null else []
 
-var _positions := {}
+var _positions: = {}
 var _physics_process_nodes:Array[Node]
 var _physics_process_just_updated: = false
 
@@ -115,42 +127,42 @@ func reset_node_path(path:NodePath) -> void:
 
 
 # add a Node to the includes Array[NodePath]
-func add_include_node(node:Node) -> Array:
+func add_include_node(node:Node) -> Array[NodePath]:
 	return add_include_path(get_path_to(node))
 
 
 # add a NodePath to the includes Array[NodePath]
-func add_include_path(path:NodePath) -> Array:
+func add_include_path(path:NodePath) -> Array[NodePath]:
 	return _add_unique_to_array(includes, path)
 
 
 # remove a Node from the includes Array[NodePath]
-func remove_include_node(node:Node) -> Array:
+func remove_include_node(node:Node) -> Array[NodePath]:
 	return remove_include_path(get_path_to(node))
 
 
 # remove a NodePath from the includes Array[NodePath]
-func remove_include_path(path:NodePath) -> Array:
+func remove_include_path(path:NodePath) -> Array[NodePath]:
 	return _remove_all_from_array(includes, path)
 
 
 # add a Node to the excludes Array[NodePath]
-func add_exclude_node(node:Node) -> Array:
+func add_exclude_node(node:Node) -> Array[NodePath]:
 	return add_exclude_path(get_path_to(node))
 
 
 # add a NodePath to the excludes Array[NodePath]
-func add_exclude_path(path:NodePath) -> Array:
+func add_exclude_path(path:NodePath) -> Array[NodePath]:
 	return _add_unique_to_array(excludes, path)
 
 
 # remove a Node from the excludes Array[NodePath]
-func remove_exclude_node(node:Node) -> Array:
+func remove_exclude_node(node:Node) -> Array[NodePath]:
 	return remove_exclude_path(get_path_to(node))
 
 
 # remove a NodePath from the excludes Array[NodePath]
-func remove_exclude_path(path:NodePath) -> Array:
+func remove_exclude_path(path:NodePath) -> Array[NodePath]:
 	return _remove_all_from_array(excludes, path)
 
 

@@ -3,45 +3,39 @@ class_name Actor
 
 @export var max_velocity: = Vector2(300, 1000)
 @export var gravity: = Vector2(0, 3000)
-@export var local_smoothed: = false # apply local smoothing to compare with smoother node results
-
-var previous_physics_position
 
 signal screen_entered
 signal screen_exited
 
-# TO DO:
-# Better to automatically add a VisibleOnScreenNotifier2D in _ready and hook it up by code
-# otherwise this'll get tedious and I'll probably forget this half the time.
-
+# Note: For performance improvement, it may be advantageous to create and hook up a
+# VisibleOnScreenNotifier2D via code if all/most moveable sprites extend this class, rather than
+# having to remember to add one in the GUI node tree every time.
 
 func _ready() -> void:
-	pass
+	print("ready: ", name)
+	if $Label: $Label.text = name
 
 
 func _enter_tree() -> void:
-	previous_physics_position = position
-
+	# For performance improvement via the Smoother.excludes array:
+	# The VisibleOnScreenNotifier2D signal on_screen_entered fires automatically, but not so the
+	# on_screen_exited signal, so we also want to know at this point what nodes are not on screen.
+	# (This can be ignored for performance improvements via the Smoother.includes array.)
 	if !$VisibleOnScreenNotifier2D.is_on_screen():
-		# onScreenEntered seems to fire automatically, but we also want to know at this point what
-		# nodes are not on screen so that we can implement some performance improvements
-		emit_signal("screen_exited", self)
+		_on_screen_exited()
 
 
 func _exit_tree() -> void:
-	emit_signal("screen_exited", self)
-
-
-func _process(_delta: float) -> void:
-	if local_smoothed:
-		position = previous_physics_position + velocity * get_physics_process_delta_time() * Engine.get_physics_interpolation_fraction() #interpolation test
+	# For performance improvements (either method):
+	# The VisibleOnScreenNotifier2D does not automatically emit the screen_exited signal when a node
+	# exits the tree, so we better emit this manually to update the Smoother includes or excludes
+	# array.
+	_on_screen_exited()
 
 
 func _physics_process(_delta: float) -> void:
-	if local_smoothed: position = previous_physics_position # interpolation test
 	velocity = velocity.clamp(-max_velocity, max_velocity)
 	move_and_slide()
-	if local_smoothed: previous_physics_position = position #interpolation test
 
 
 func _on_screen_entered() -> void:

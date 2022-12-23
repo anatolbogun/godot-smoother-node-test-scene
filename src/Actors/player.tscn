@@ -18,16 +18,16 @@ script = ExtResource("1_nrl78")
 position = Vector2(0, -48.5)
 scale = Vector2(5.1, 5.05)
 
+[node name="Player" type="Sprite2D" parent="."]
+position = Vector2(0, -48)
+texture = ExtResource("1_8a4pw")
+
 [node name="Label" type="Label" parent="."]
 offset_left = -48.0
 offset_top = -96.0
 offset_right = 48.0
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Player" type="Sprite2D" parent="."]
-position = Vector2(0, -48)
-texture = ExtResource("1_8a4pw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -42)
@@ -46,17 +46,17 @@ drag_vertical_enabled = true
 drag_left_margin = 0.0
 drag_right_margin = 0.0
 
-[node name="EnemyDetector" type="Area2D" parent="."]
+[node name="NodeDetector" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 6
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NodeDetector"]
 modulate = Color(0.2075, 0, 0.83, 1)
 position = Vector2(0, -43)
 shape = SubResource("RectangleShape2D_dupx4")
 
 [connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_entered"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]
-[connection signal="area_entered" from="EnemyDetector" to="." method="_on_enemy_detector_area_entered"]
-[connection signal="body_entered" from="EnemyDetector" to="." method="_on_enemy_detector_body_entered"]
+[connection signal="area_entered" from="NodeDetector" to="." method="_on_node_detector_area_entered"]
+[connection signal="body_entered" from="NodeDetector" to="." method="_on_node_detector_body_entered"]

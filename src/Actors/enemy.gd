@@ -14,9 +14,9 @@ func _on_stomp_detector_body_entered(body: Node2D) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	super(delta)
-
 	velocity += gravity * delta
 
 	if is_on_wall():
 		velocity.x *= -1.0
+
+	super(delta)

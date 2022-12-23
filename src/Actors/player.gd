@@ -1,21 +1,5 @@
 extends Actor
 
-# Notes:
-# - better than polling input events on every frame it should be better to use
-#   func _unhandled_input(event: InputEvent) -> void: (try to change this)
-# - I don't think it's a good idea to check stomp both in enemy and player
-#   because it doesn't seem to be precise. e.g. it's possible for the player to
-#   get a stomp impulse even if the enemy didn't die. Maybe instead the dying
-#   enemy should emit a signal (either directly to the player or to a player
-#   group) that tells the player that the enemy was killed successfully and the
-#   stomp impulse happens only then (try to change this)
-# - I'd be also cautious with checking the stomp (where the enemy dies) and the
-#   the collision (where the player dies) using separate Area2D with collision
-#   shapes. On low performance devices it may be conceivable that when multiple
-#   frames are skipped, the player bypasses the enemy's StompDetector and dies
-#   instead. But this may not be a problem in _physics_process which promises to
-#   be called very regularly and code in there is automatically threaded.
-
 @export var stomp_impulse: = 1000.0
 
 var origin: Vector2
@@ -25,20 +9,25 @@ signal teleport_started
 
 func _ready() -> void:
 	super()
-	$Label.text = name
+
+	# the portal will simply teleport the player back to the original position
 	origin = position
 
 
-func _on_enemy_detector_area_entered(area: Area2D) -> void:
+func _on_node_detector_area_entered(area: Area2D) -> void:
 	if area.is_in_group("portals"):
+		# Emitting teleport_started will call $Smoother.reset_node(node) in the level code so that
+		# the teleported sprite position isn't interpolated during a teleport.
 		emit_signal("teleport_started", self)
+
+		# Teleport the player back to the original start position and reset the velocity.
 		position = origin
 		velocity = Vector2.ZERO
 	else:
 		velocity = calculate_stomp_velocity(stomp_impulse)
 
 
-func _on_enemy_detector_body_entered(body: Node2D) -> void:
+func _on_node_detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("enemies"):
 		get_tree().reload_current_scene()
 
