@@ -43,7 +43,6 @@ camera = NodePath("Player/Camera2D")
 [node name="Smoother" type="Node" parent="."]
 script = ExtResource("2_lr87i")
 properties = ["position", "rotation"]
-excludes = [NodePath("")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
