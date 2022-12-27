@@ -40,11 +40,8 @@ func _physics_process(delta: float) -> void:
 
 	# for testing rotation smoothing (not very well implemented in this project)
 	if is_on_floor():
-#		rotation = -get_floor_angle()
 		var rad = deg_to_rad(max_rotation_step)
 		rotation = clampf(-get_floor_angle(), rotation - rad, rotation + rad)
-		print(rotation)
-#		rotation = rotation + (-get_floor_angle() - rotation) * 0.5
 
 	super(delta)
 

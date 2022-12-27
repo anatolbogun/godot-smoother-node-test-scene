@@ -1,8 +1,13 @@
 extends Node2D
 
+@export var camera:NodePath
+
 
 func _ready() -> void:
-	$"Player/Camera2D".limit_right = $TileMap.get_used_rect().end.x * $TileMap.tile_set.tile_size.x
+	var cameraNode: = get_node_or_null(camera)
+
+	if cameraNode:
+		cameraNode.limit_right = $TileMap.get_used_rect().end.x * $TileMap.tile_set.tile_size.x
 
 
 func _on_node_teleport_started(node: Node) -> void:
