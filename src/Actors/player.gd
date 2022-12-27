@@ -1,6 +1,7 @@
 extends Actor
 
 @export var stomp_impulse: = 1000.0
+@export var max_rotation_step: = 15.0
 
 var origin: Vector2
 
@@ -36,6 +37,15 @@ func _physics_process(delta: float) -> void:
 	var is_jump_interrupted: = Input.is_action_just_released("jump") and velocity.y < 0.0
 	var direction: = get_direction()
 	velocity = calculate_move_velocity(direction, max_velocity, is_jump_interrupted)
+
+	# for testing rotation smoothing (not very well implemented in this project)
+	if is_on_floor():
+#		rotation = -get_floor_angle()
+		var rad = deg_to_rad(max_rotation_step)
+		rotation = clampf(-get_floor_angle(), rotation - rad, rotation + rad)
+		print(rotation)
+#		rotation = rotation + (-get_floor_angle() - rotation) * 0.5
+
 	super(delta)
 
 

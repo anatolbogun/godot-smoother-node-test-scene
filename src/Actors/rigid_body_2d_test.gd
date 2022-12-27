@@ -9,4 +9,4 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# RigidBody2D is not supported by the Smoother, so even though this node has
 	# a custom _physics_process it gets ignored by the Smoother.
-	pass
+	if $Hint: $Hint.rotation = -rotation
