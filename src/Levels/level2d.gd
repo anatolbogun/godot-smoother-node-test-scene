@@ -21,7 +21,7 @@ func _on_node_screen_entered(node:Node) -> void:
 		$Smoother.remove_exclude_node(node)
 
 		# method 2: set Smoother to smooth_parent: false, recursive: false and include on-screen nodes
-	#	$Smoother.add_include_node(node)
+#		$Smoother.add_include_node(node)
 
 		print("smoothed nodes: ", $Smoother.smoothed_nodes.map(func (node:Node): return node.name))
 
@@ -32,6 +32,6 @@ func _on_node_screen_exited(node:Node) -> void:
 		$Smoother.add_exclude_node(node)
 
 		# method 2: set Smoother to smooth_parent: false, recursive: false and include on-screen nodes
-	#	$Smoother.remove_include_node(node)
+#		$Smoother.remove_include_node(node)
 
 		print("smoothed nodes: ", $Smoother.smoothed_nodes.map(func (node:Node): return node.name))
