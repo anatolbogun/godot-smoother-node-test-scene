@@ -6,7 +6,7 @@ func _ready() -> void:
 	if $Label: $Label.text = name
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# RigidBody2D is not supported by the Smoother, so even though this node has
 	# a custom _physics_process it gets ignored by the Smoother.
 	if $Hint: $Hint.rotation = -rotation
