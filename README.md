@@ -5,5 +5,6 @@ This includes a simple 2d and 3d scene. The 2d scene is loosely based on [this G
 
 Simply add the `Smoother` node to a scene to interpolate node movements. See the above linked project for more details.
 
-![godot-smoother-node-comparison](https://user-images.githubusercontent.com/7110246/209285560-20b98559-5859-4fed-818e-f16ebcce0a40.gif)
-Above: Not smoothed vs. smoothed (player movements are not synced, these are 2 separate runs).
+![godot-smoother-node-comparison](https://user-images.githubusercontent.com/7110246/209794022-6850cb5b-8be8-4fa8-a81f-7da4763b731b.gif)
+
+Above: Not smoothed vs. smoothed.
