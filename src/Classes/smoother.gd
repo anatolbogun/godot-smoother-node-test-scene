@@ -1,4 +1,5 @@
 # SMOOTHER NODE
+# Version: 1.0.0
 #
 # For documentation please visit https://github.com/anatolbogun/godot-smoother-node .
 #
