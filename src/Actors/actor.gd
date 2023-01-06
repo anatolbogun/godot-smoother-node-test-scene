@@ -25,7 +25,7 @@ func _enter_tree() -> void:
 	# (This can be ignored for performance improvements via the Smoother.includes array.)
 
 	await RenderingServer.frame_post_draw
-#
+
 	if !$VisibleOnScreenNotifier2D.is_on_screen():
 		_on_screen_exited()
 

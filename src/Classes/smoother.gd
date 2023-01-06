@@ -203,9 +203,9 @@ func _physics_process(_delta: float) -> void:
 ## Get the relevant nodes to be smoothed based on this node's tree position and properties.
 func _get_physics_process_nodes(node: Node, ignore_node: = false, with_includes: = true) -> Array[Node]:
 	var nodes:Array[Node] = includes.map(
-		func (include): return get_node_or_null(include)
+		get_node_or_null
 	).filter(
-		func (node): return node != null && !excludes.has(node)
+		func (node): return node != null && !excludes.has(get_path_to(node))
 	) if with_includes else []
 
 	if (
@@ -221,6 +221,7 @@ func _get_physics_process_nodes(node: Node, ignore_node: = false, with_includes:
 
 	if recursive:
 		for child in node.get_children():
-			nodes.append_array(_get_physics_process_nodes(child, false, false))
+			for nested_node in _get_physics_process_nodes(child, false, false):
+				_add_unique_to_array(nodes, nested_node)
 
 	return nodes
