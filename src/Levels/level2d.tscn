@@ -41,7 +41,6 @@ script = ExtResource("1_rpm3x")
 camera = NodePath("Player/Camera2D")
 
 [node name="Smoother" type="Node" parent="."]
-process_mode = 4
 script = ExtResource("2_lr87i")
 properties = Array[String](["position", "rotation"])
 
