@@ -12,7 +12,19 @@ func _ready() -> void:
 
 func _on_node_teleport_started(node: Node) -> void:
 	print("teleporting: ", node.name)
+
 	if $Smoother: $Smoother.reset_node(node)
+
+	# If we want a hard cut to the teleport position, we need to turn camera position smoothing off.
+	# This is optional, with camera smoothing enabled it may be less confusing for the player.
+	var cameraNode: = get_node_or_null(camera)
+	if cameraNode: cameraNode.position_smoothing_enabled = false
+
+	# We need to wait 2 process frames to re-enable camera position smoothing
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	if cameraNode: cameraNode.position_smoothing_enabled = true
 
 
 func _on_node_screen_entered(node:Node) -> void:
