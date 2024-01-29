@@ -157,6 +157,15 @@ func _process(_delta: float) -> void:
 ## _physics_process frames for interpolation in the upcoming _process frames and apply the origin
 ## values.
 func _physics_process(_delta: float) -> void:
+	if (Engine.max_fps < Engine.physics_ticks_per_second
+		|| (
+			Engine.max_fps == 0
+			&& DisplayServer.screen_get_refresh_rate() < Engine.physics_ticks_per_second
+		)
+	):
+		reset()
+		return
+
 	var parent: = get_parent()
 	if parent == null: return
 
