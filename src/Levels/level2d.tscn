@@ -13,22 +13,14 @@
 texture = ExtResource("4_p0vq3")
 texture_region_size = Vector2i(80, 80)
 0:1/0 = 0
-0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:1/0/physics_layer_0/angular_velocity = 0.0
 0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-40, 40, 40, -40, 40, 40)
 0:0/0 = 0
-0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:0/0/physics_layer_0/angular_velocity = 0.0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(40, -40, 40, -40, 40, 40, -40, 40, -40, -40)
 0:2/size_in_atlas = Vector2i(2, 1)
 0:2/0 = 0
 0:2/0/texture_origin = Vector2i(-40, 0)
-0:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-0:2/0/physics_layer_0/angular_velocity = 0.0
 0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-40, 40, 119.5, -39, 120, 40.5)
 1:0/0 = 0
-1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
-1:0/0/physics_layer_0/angular_velocity = 0.0
 
 [sub_resource type="TileSet" id="TileSet_mjviy"]
 tile_size = Vector2i(80, 80)
@@ -43,6 +35,7 @@ camera = NodePath("Player/Camera2D")
 [node name="Smoother" type="Node" parent="."]
 script = ExtResource("2_lr87i")
 properties = Array[String](["position", "rotation"])
+excludes = Array[NodePath]([NodePath("../Player2")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
@@ -78,6 +71,11 @@ drag_vertical_enabled = true
 drag_left_margin = 0.0
 drag_right_margin = 0.0
 
+[node name="Player2" parent="." instance=ExtResource("6_6wubv")]
+modulate = Color(1, 0.0980392, 0, 1)
+position = Vector2(261, 148)
+safe_margin = 3.0
+
 [node name="RigidBody" parent="." instance=ExtResource("7_bgcgm")]
 position = Vector2(2720, 12)
 collision_mask = 15
@@ -94,6 +92,7 @@ position = Vector2(2220, 556)
 position = Vector2(3056, 556)
 
 [connection signal="teleport_started" from="Player" to="." method="_on_node_teleport_started"]
+[connection signal="teleport_started" from="Player2" to="." method="_on_node_teleport_started"]
 [connection signal="screen_entered" from="NestedTest/Enemy1" to="." method="_on_node_screen_entered"]
 [connection signal="screen_exited" from="NestedTest/Enemy1" to="." method="_on_node_screen_exited"]
 [connection signal="screen_entered" from="NestedTest/Enemy2" to="." method="_on_node_screen_entered"]

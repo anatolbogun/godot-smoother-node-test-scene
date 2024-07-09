@@ -10,6 +10,12 @@ func _ready() -> void:
 		cameraNode.limit_right = $TileMap.get_used_rect().end.x * $TileMap.tile_set.tile_size.x
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_max_fps"):
+		Engine.max_fps = 10 if Engine.max_fps == 0 else 0
+		print('Engine.max_fps: ', Engine.max_fps)
+
+
 func _on_node_teleport_started(node: Node) -> void:
 	print("teleporting: ", node.name)
 
