@@ -60,6 +60,7 @@ var smoothed_nodes:Array[Node] :
 var _properties: = {}
 var _physics_process_nodes:Array[Node]
 var _physics_process_just_updated: = false
+var _apply: = true
 
 
 ## Reset all smoothed nodes.
@@ -148,7 +149,10 @@ func _process(_delta: float) -> void:
 				if _physics_process_just_updated:
 					values[1] = node[property]
 
-				node[property] = lerp(values[0], values[1], Engine.get_physics_interpolation_fraction())
+				if _apply:
+					node[property] = lerp(values[0], values[1], Engine.get_physics_interpolation_fraction())
+				else:
+					node[property] = values[1]
 
 	_physics_process_just_updated = false
 
@@ -157,14 +161,7 @@ func _process(_delta: float) -> void:
 ## _physics_process frames for interpolation in the upcoming _process frames and apply the origin
 ## values.
 func _physics_process(_delta: float) -> void:
-	if (Engine.max_fps < Engine.physics_ticks_per_second
-		|| (
-			Engine.max_fps == 0
-			&& DisplayServer.screen_get_refresh_rate() < Engine.physics_ticks_per_second
-		)
-	):
-		reset()
-		return
+	_apply = Engine.get_frames_per_second() > Engine.physics_ticks_per_second
 
 	var parent: = get_parent()
 	if parent == null: return
@@ -204,7 +201,8 @@ func _physics_process(_delta: float) -> void:
 				_properties[node][property][1] = node[property]
 			else:
 				_properties[node][property][0] = _properties[node][property][1]
-				node[property] = _properties[node][property][0]
+				if _apply:
+					node[property] = _properties[node][property][0]
 
 	_physics_process_just_updated = true
 
